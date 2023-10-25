@@ -16,11 +16,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final todoList = ToDo.todoList();
-  final addtaskcontroller=TextEditingController();
-  List<ToDo> _foundToDo =[];
+  final addtaskcontroller = TextEditingController();
+  List<ToDo> _foundToDo = [];
+
   @override
-  void initState(){
-    _foundToDo=todoList;
+  void initState() {
+    _foundToDo = todoList;
     super.initState();
   }
 
@@ -32,6 +33,7 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           Container(
+            margin: EdgeInsets.only(bottom: 25),
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             child: Column(
               children: [
@@ -48,7 +50,7 @@ class _HomePageState extends State<HomePage> {
                               fontSize: 30, fontWeight: FontWeight.w500),
                         ),
                       ),
-                      for (ToDo todo in _foundToDo)
+                      for (ToDo todo in _foundToDo.reversed)
                         ToDoItem(
                           todo: todo,
                           onTodDoChanged: _handleToDoChange,
@@ -66,19 +68,19 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                     child: Container(
-                  padding: EdgeInsets.only(left: 10),
-                  margin: EdgeInsets.only(bottom: 20, right: 20, left: 20),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Colors.grey,
-                            offset: Offset(0.0, 0.0),
-                            blurRadius: 10.0,
-                            spreadRadius: 0.0)
-                      ],
-                      borderRadius: BorderRadius.circular(10)),
-                  child: TextField(
+                      padding: EdgeInsets.only(left: 10),
+                      margin: EdgeInsets.only(bottom: 5, right: 20, left: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0.0, 0.0),
+                              blurRadius: 10.0,
+                              spreadRadius: 0.0)
+                        ],
+                        borderRadius: BorderRadius.circular(10)),
+                    child: TextField(
                     controller: addtaskcontroller,
                     decoration: InputDecoration(
                         hintText: 'Ajouter une nouvelle tache',
@@ -86,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 )),
                 Container(
-                    margin: EdgeInsets.only(bottom: 20, right: 20),
+                    margin: EdgeInsets.only(bottom: 5, right: 20),
                     child: ElevatedButton(
                       onPressed: () {
                         _addTodoItem(addtaskcontroller.text);
@@ -134,24 +136,24 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
-  void _runfilter(String enteredKeyword){
-    List<ToDo>? result=[];
-    if(enteredKeyword.isEmpty){
-       result= todoList;
-    }else
-      {
-        result= todoList.
-        where(
-                (element) => element.todoText!
-                    .toLowerCase()
-                    .contains(enteredKeyword.toLowerCase()))
-            .toList();
-      }
+
+  void _runfilter(String enteredKeyword) {
+    List<ToDo>? result = [];
+    if (enteredKeyword.isEmpty) {
+      result = todoList;
+    } else {
+      result = todoList
+          .where((element) => element.todoText!
+              .toLowerCase()
+              .contains(enteredKeyword.toLowerCase()))
+          .toList();
+    }
     setState(() {
-      _foundToDo=result!;
+      _foundToDo = result!;
     });
   }
-  void _addTodoItem(String task){
+
+  void _addTodoItem(String task) {
     setState(() {
       todoList.add(ToDo(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -159,14 +161,16 @@ class _HomePageState extends State<HomePage> {
     });
     addtaskcontroller.clear();
   }
-  void _handleToDoChange(ToDo todo){
+
+  void _handleToDoChange(ToDo todo) {
     setState(() {
-      todo.isDone=!todo.isDone;
+      todo.isDone = !todo.isDone;
     });
   }
-  void _deleteToDoItem(String id){
+
+  void _deleteToDoItem(String id) {
     setState(() {
-      todoList.removeWhere((item) => item.id==id);
+      todoList.removeWhere((item) => item.id == id);
     });
   }
 
@@ -174,9 +178,9 @@ class _HomePageState extends State<HomePage> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(20)),
+          color: Colors.grey[50], borderRadius: BorderRadius.circular(20)),
       child: TextFormField(
-        onChanged: (value){
+        onChanged: (value) {
           _runfilter(value);
         },
         decoration: InputDecoration(
