@@ -16,6 +16,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final todoList = ToDo.todoList();
+  final addtaskcontroller=TextEditingController();
+  List<ToDo> _foundToDo =[];
+  @override
+  void initState(){
+    _foundToDo=todoList;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +37,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 searchBox(),
                 Expanded(
+                  flex: 1,
                   child: ListView(
                     children: [
                       Container(
@@ -40,7 +48,7 @@ class _HomePageState extends State<HomePage> {
                               fontSize: 30, fontWeight: FontWeight.w500),
                         ),
                       ),
-                      for (ToDo todo in todoList)
+                      for (ToDo todo in _foundToDo)
                         ToDoItem(
                           todo: todo,
                           onTodDoChanged: _handleToDoChange,
@@ -71,6 +79,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                       borderRadius: BorderRadius.circular(10)),
                   child: TextField(
+                    controller: addtaskcontroller,
                     decoration: InputDecoration(
                         hintText: 'Ajouter une nouvelle tache',
                         border: InputBorder.none),
@@ -79,7 +88,9 @@ class _HomePageState extends State<HomePage> {
                 Container(
                     margin: EdgeInsets.only(bottom: 20, right: 20),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _addTodoItem(addtaskcontroller.text);
+                      },
                       child: Text(
                         '+',
                         style: TextStyle(
@@ -123,6 +134,31 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
+  void _runfilter(String enteredKeyword){
+    List<ToDo>? result=[];
+    if(enteredKeyword.isEmpty){
+       result= todoList;
+    }else
+      {
+        result= todoList.
+        where(
+                (element) => element.todoText!
+                    .toLowerCase()
+                    .contains(enteredKeyword.toLowerCase()))
+            .toList();
+      }
+    setState(() {
+      _foundToDo=result!;
+    });
+  }
+  void _addTodoItem(String task){
+    setState(() {
+      todoList.add(ToDo(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          todoText: task));
+    });
+    addtaskcontroller.clear();
+  }
   void _handleToDoChange(ToDo todo){
     setState(() {
       todo.isDone=!todo.isDone;
@@ -140,6 +176,9 @@ class _HomePageState extends State<HomePage> {
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(20)),
       child: TextFormField(
+        onChanged: (value){
+          _runfilter(value);
+        },
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(0),
           prefix: Icon(
