@@ -1,8 +1,8 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
 import 'package:todolist/constants/colors.dart';
-import 'package:todolist/onbordingPage/onbordingpage.dart';
 import 'package:todolist/widget/todo_item.dart';
 
 import '../model/todo.dart';
@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: tdBGColor,
       appBar: buildAppBar(),
+      drawer:  NavigationDrawerCustum(),
       body: Stack(
         children: [
           Container(
@@ -115,10 +116,6 @@ class _HomePageState extends State<HomePage> {
   AppBar buildAppBar() {
     return AppBar(
       backgroundColor: tdBGColor,
-      leading: Icon(
-        Icons.menu,
-        color: tdBlack,
-      ),
       title: Text(
         'Home',
         style: TextStyle(color: tdBlack),
@@ -198,4 +195,74 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+class NavigationDrawerCustum extends StatelessWidget {
+  NavigationDrawerCustum({Key? key}):super(key: key);
+ DateTime? lastPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return  Drawer(
+      elevation: 1,
+      child: SingleChildScrollView(
+        child: Column(
+          children:<Widget> [
+            buildHeader(context),
+            buildMenuItems(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+ Widget buildHeader(BuildContext context) =>Container(
+   padding: EdgeInsets.only(
+     top: MediaQuery.of(context).padding.top
+   ),
+ ) ;
+
+ Widget buildMenuItems(BuildContext context) => Column(
+   children: [
+     ListTile(
+       leading: Icon(Icons.person),
+       title: Text('Profil',
+       style: TextStyle(
+         fontSize: 15
+       ),),
+       onTap: (){
+
+       },
+     ),
+     ListTile(
+       leading: Icon(Icons.settings),
+       title: Text('Setting',
+         style: TextStyle(
+             fontSize: 15
+         ),),
+       onTap: (){
+
+       },
+     ),
+     ListTile(
+       leading: Icon(Icons.logout),
+       title: Text('LogOut',
+         style: TextStyle(
+             fontSize: 15
+         ),),
+       onTap: () async{
+         //todo It's for mobile app not for web
+         /*if(Platform.isAndroid){
+           print('Android');
+
+         SystemNavigator.pop();
+         }else {
+           print('none');
+         }*/
+
+       },
+     )
+   ],
+ );
 }
