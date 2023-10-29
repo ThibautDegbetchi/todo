@@ -27,9 +27,9 @@ class NotesDatabase{
     final isDoneType='Boolean not null';
     await db.execute('''
     CREATE TABLE $tableNotes(
-    ${NoteFields.id} ${idType},
-    ${NoteFields.todoText} ${todoTextType},
-    ${NoteFields.isDone} ${isDoneType}
+    ${TodoFields.id} ${idType},
+    ${TodoFields.todoText} ${todoTextType},
+    ${TodoFields.isDone} ${isDoneType}
      )
     ''');
   }
@@ -39,11 +39,42 @@ class NotesDatabase{
     return note.copy(id:id);
     }
   Future<ToDo> readToOo(int id)async{
-    final maps=await db.query(
+    final db= await instance.database;
+    final maps=await db?.query(
       tableNotes,
-      colums: NoteFields.value,
-    )
+      columns: TodoFields.values,
+      where: '${TodoFields.id}= ?',
+      whereArgs:[id],
+    );
+    if(maps!.isNotEmpty){
+      return ToDo.fromJson(maps!.first);
+    }else{
+      throw Exception('Id $id not found');
+    }
   }
+  Future<List<ToDo>?> readAllNote()async{
+    final db=await instance.database;
+    final orderby='${TodoFields.id} asc';
+    final result=await db?.query(tableNotes,orderBy: orderby);
+    return result?.map((json) => ToDo.fromJson(json)).toList();
+  }
+
+  Future<int> update(ToDo todo)async{
+    final db=await instance.database;
+    return db!.update(tableNotes,
+        todo.toJson(),
+        where: '${TodoFields.id}=?',
+    whereArgs: [todo.id]);
+  }
+  Future<int> delete(int id)async{
+    final db=await instance.database;
+    return await db!.delete(
+      tableNotes,
+      whereArgs:[id],
+      where: '${TodoFields.id}=?'
+    );
+  }
+
   Future close()async{
     final db=await instance.database;
     db?.close();
