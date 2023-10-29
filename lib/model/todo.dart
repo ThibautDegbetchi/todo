@@ -1,3 +1,12 @@
+final String tableNotes= 'notes';
+
+class NoteFields{
+
+  static final String id='_id';
+  static final String todoText='_todoText';
+  static final String isDone='isDone';
+}
+
 class ToDo{
   String? id;
   String? todoText;
@@ -21,4 +30,14 @@ class ToDo{
 
     ];
   }
+  Map<String, Object?>toJson()=>{
+    NoteFields.id:id,
+    NoteFields.todoText:todoText,
+    NoteFields.isDone:isDone? 1:0
+};
+  ToDo copy({
+    int? id,
+    String? todoText,
+    bool? isDone,
+  })=>ToDo(id: id.toString(), todoText: todoText);
 }
