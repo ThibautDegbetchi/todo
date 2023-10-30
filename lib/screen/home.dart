@@ -21,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _foundToDo = todoList;
     super.initState();
+    //refreshTodo();
   }
 
   @override
@@ -193,6 +194,10 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+ /* Future refreshTodo() {
+
+  }*/
 }
 
 // ignore: must_be_immutable
