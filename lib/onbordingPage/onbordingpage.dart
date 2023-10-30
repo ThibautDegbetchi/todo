@@ -1,6 +1,4 @@
-import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -17,7 +15,7 @@ class OnbordingPageState extends StatefulWidget {
 class _OnbordingPageStateState extends State<OnbordingPageState> {
   final control =PageController();
   bool isLastPage=false;
-  @override
+
   void controller(){
     control.dispose();
     super.dispose();
@@ -40,17 +38,17 @@ class _OnbordingPageStateState extends State<OnbordingPageState> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height/2,
-                      child: Image(image: AssetImage('assets/images.jpeg'),
+                      child: const Image(image: AssetImage('assets/images.jpeg'),
                         fit: BoxFit.contain,
                       ),
                     ),
                     const SizedBox(
                       height: 25,
                     ) ,
-                    Text('Planify your time to have a better live ! ',
+                    const Text('Planify your time to have a better live ! ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20
@@ -65,17 +63,17 @@ class _OnbordingPageStateState extends State<OnbordingPageState> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height/2,
-                      child: Image(image: AssetImage('assets/logo1.png'),
+                      child: const Image(image: AssetImage('assets/logo1.png'),
                         fit: BoxFit.contain,
                       ),
                     ),
                     const SizedBox(
                       height: 25,
                     ) ,
-                    Text('Do your best bro',
+                    const Text('Do your best bro',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20
@@ -90,17 +88,17 @@ class _OnbordingPageStateState extends State<OnbordingPageState> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height/2,
-                      child: Image(image: AssetImage('assets/imagetodolist.png'),
+                      child: const Image(image: AssetImage('assets/imagetodolist.png'),
                         fit: BoxFit.contain,
                       ),
                     ),
                     const SizedBox(
                       height: 25,
                     ) ,
-                    Text('Let Start Now! ',
+                    const Text('Let Start Now! ',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20
@@ -115,20 +113,20 @@ class _OnbordingPageStateState extends State<OnbordingPageState> {
       bottomSheet: isLastPage?
           TextButton(
               style:TextButton.styleFrom(
-                shape: RoundedRectangleBorder(
+                foregroundColor: Colors.white, shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                primary: Colors.white,
                 backgroundColor: Colors.teal,
-                minimumSize: Size.fromHeight(80),
+                minimumSize: const Size.fromHeight(80),
               ),
               onPressed: () async{
                 final pref = await SharedPreferences.getInstance();
                 pref.setBool('showHome', true);
+                // ignore: use_build_context_synchronously
                 Navigator.push(context, MaterialPageRoute(builder: (context){
-                  return HomePage();
+                  return const HomePage();
                 }));
-          }, child: Text('Start'))
+          }, child: const Text('Start'))
           : Container(
             padding: const EdgeInsets.symmetric(horizontal: 1),
              height: 80,
@@ -143,18 +141,18 @@ class _OnbordingPageStateState extends State<OnbordingPageState> {
               Center(
               child: SmoothPageIndicator(controller: control,
                 count: 3,
-                effect: WormEffect(
+                effect: const WormEffect(
                   spacing: 16,
                   dotColor: Colors.black26,
                   activeDotColor: Colors.purple,
                 ),
                 onDotClicked: (index){
-                 control.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.easeInSine);
+                 control.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.easeInSine);
                 },
               ) ,
             ),
               TextButton(onPressed: (){
-              control.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+              control.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
             },
                 child: const Text('NEXT')),
 

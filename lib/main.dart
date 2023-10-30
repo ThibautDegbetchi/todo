@@ -12,15 +12,15 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   final bool showHome;
-   MyApp({Key? key,required this.showHome}):super(key: key);
+   const MyApp({Key? key,required this.showHome}):super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'todolistapp',
-      home: showHome? HomePage():OnbordingPageState(),
+      home: showHome? const HomePage():const OnbordingPageState(),
     );
   }
 }

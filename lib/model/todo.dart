@@ -1,12 +1,12 @@
-final String tableNotes= 'notes';
+const  String tableNotes= 'notes';
 
 class TodoFields{
   static final List<String> values=[
     id,todoText,isDone
   ];
-  static final String id='_id';
-  static final String todoText='_todoText';
-  static final String isDone='isDone';
+  static const String id='_id';
+  static const String todoText='_todoText';
+  static const String isDone='isDone';
 }
 
 class ToDo{

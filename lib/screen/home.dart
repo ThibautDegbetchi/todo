@@ -1,7 +1,5 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:todolist/constants/colors.dart';
 import 'package:todolist/widget/todo_item.dart';
 
@@ -34,8 +32,8 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           Container(
-            margin: EdgeInsets.only(bottom: 25),
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            margin: const EdgeInsets.only(bottom: 25),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             child: Column(
               children: [
                 searchBox(),
@@ -44,8 +42,8 @@ class _HomePageState extends State<HomePage> {
                   child: ListView(
                     children: [
                       Container(
-                        margin: EdgeInsets.only(top: 50, bottom: 20),
-                        child: Text(
+                        margin: const EdgeInsets.only(top: 50, bottom: 20),
+                        child: const Text(
                           'Toutes les Taches',
                           style: TextStyle(
                               fontSize: 30, fontWeight: FontWeight.w500),
@@ -69,8 +67,8 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                     child: Container(
-                      padding: EdgeInsets.only(left: 10),
-                      margin: EdgeInsets.only(bottom: 5, right: 20, left: 20),
+                      padding: const EdgeInsets.only(left: 10),
+                      margin: const EdgeInsets.only(bottom: 5, right: 20, left: 20),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         boxShadow: const [
@@ -83,27 +81,27 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(10)),
                     child: TextField(
                     controller: addtaskcontroller,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         hintText: 'Ajouter une nouvelle tache',
                         border: InputBorder.none),
                   ),
                 )),
                 Container(
-                    margin: EdgeInsets.only(bottom: 5, right: 20),
+                    margin: const EdgeInsets.only(bottom: 5, right: 20),
                     child: ElevatedButton(
                       onPressed: () {
                         _addTodoItem(addtaskcontroller.text);
                       },
-                      child: Text(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: tdBlue,
+                          minimumSize: const Size(60, 60),
+                          elevation: 10),
+                      child: const Text(
                         '+',
                         style: TextStyle(
                           fontSize: 40,
                         ),
                       ),
-                      style: ElevatedButton.styleFrom(
-                          primary: tdBlue,
-                          minimumSize: Size(60, 60),
-                          elevation: 10),
                     ))
               ],
             ),
@@ -116,13 +114,13 @@ class _HomePageState extends State<HomePage> {
   AppBar buildAppBar() {
     return AppBar(
       backgroundColor: tdBGColor,
-      title: Text(
+      title: const Text(
         'Home',
         style: TextStyle(color: tdBlack),
       ),
       centerTitle: true,
       actions: [
-        Container(
+        SizedBox(
           height: 40,
           width: 40,
           child: ClipRRect(
@@ -173,14 +171,14 @@ class _HomePageState extends State<HomePage> {
 
   Widget searchBox() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
           color: Colors.grey[50], borderRadius: BorderRadius.circular(20)),
       child: TextFormField(
         onChanged: (value) {
           _runfilter(value);
         },
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           contentPadding: EdgeInsets.all(0),
           prefix: Icon(
             Icons.search,
@@ -197,6 +195,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+// ignore: must_be_immutable
 class NavigationDrawerCustum extends StatelessWidget {
   NavigationDrawerCustum({Key? key}):super(key: key);
  DateTime? lastPressed;
@@ -226,8 +225,8 @@ class NavigationDrawerCustum extends StatelessWidget {
  Widget buildMenuItems(BuildContext context) => Column(
    children: [
      ListTile(
-       leading: Icon(Icons.person),
-       title: Text('Profil',
+       leading: const Icon(Icons.person),
+       title: const Text('Profil',
        style: TextStyle(
          fontSize: 15
        ),),
@@ -236,8 +235,8 @@ class NavigationDrawerCustum extends StatelessWidget {
        },
      ),
      ListTile(
-       leading: Icon(Icons.settings),
-       title: Text('Setting',
+       leading: const Icon(Icons.settings),
+       title: const Text('Setting',
          style: TextStyle(
              fontSize: 15
          ),),
@@ -246,8 +245,8 @@ class NavigationDrawerCustum extends StatelessWidget {
        },
      ),
      ListTile(
-       leading: Icon(Icons.logout),
-       title: Text('LogOut',
+       leading: const Icon(Icons.logout),
+       title: const Text('LogOut',
          style: TextStyle(
              fontSize: 15
          ),),

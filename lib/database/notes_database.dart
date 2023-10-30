@@ -22,14 +22,14 @@ class NotesDatabase{
 
   }
   Future _createDB(Database db,int version) async{
-    final idType='Interger primary key autoincrement';
-    final todoTextType='text not null';
-    final isDoneType='Boolean not null';
+    const  idType='Interger primary key autoincrement';
+    const  todoTextType='text not null';
+    const  isDoneType='Boolean not null';
     await db.execute('''
     CREATE TABLE $tableNotes(
-    ${TodoFields.id} ${idType},
-    ${TodoFields.todoText} ${todoTextType},
-    ${TodoFields.isDone} ${isDoneType}
+    ${TodoFields.id} $idType,
+    ${TodoFields.todoText} $todoTextType,
+    ${TodoFields.isDone} $isDoneType
      )
     ''');
   }
@@ -47,14 +47,14 @@ class NotesDatabase{
       whereArgs:[id],
     );
     if(maps!.isNotEmpty){
-      return ToDo.fromJson(maps!.first);
+      return ToDo.fromJson(maps.first);
     }else{
       throw Exception('Id $id not found');
     }
   }
   Future<List<ToDo>?> readAllNote()async{
     final db=await instance.database;
-    final orderby='${TodoFields.id} asc';
+    const  orderby='${TodoFields.id} asc';
     final result=await db?.query(tableNotes,orderBy: orderby);
     return result?.map((json) => ToDo.fromJson(json)).toList();
   }
