@@ -32,7 +32,7 @@ class ToDo{
 
     ];
   }*/
-  Map<String, Object?>toJson()=>{
+  Map<String, Object?> toJson() => {
     TodoFields.id:id,
     TodoFields.todoText:todoText,
     TodoFields.isDone:isDone? 1:0
