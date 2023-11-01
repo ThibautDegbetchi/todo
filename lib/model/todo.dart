@@ -10,7 +10,7 @@ class TodoFields{
 }
 
 class ToDo{
-  String? id;
+  int id;
   String? todoText;
   bool isDone;
   
@@ -20,7 +20,7 @@ class ToDo{
     this.isDone= false,
 });
   
-  static List<ToDo> todoList()
+  /*static List<ToDo> todoList()
   {
     return[
       ToDo(id: '01', todoText: 'Sport du matin',isDone: true),
@@ -31,14 +31,14 @@ class ToDo{
       ToDo(id: '06', todoText: 'Dinner avec ...',isDone: true),
 
     ];
-  }
+  }*/
   Map<String, Object?>toJson()=>{
     TodoFields.id:id,
     TodoFields.todoText:todoText,
     TodoFields.isDone:isDone? 1:0
 };
   static ToDo fromJson(Map<String,Object?> json)=>ToDo(
-    id: json[TodoFields.id]as String,
+    id: json[TodoFields.id]as int,
     todoText: json[TodoFields.todoText] as String,
     isDone: json[TodoFields.isDone]==1
   );
@@ -46,5 +46,5 @@ class ToDo{
     int? id,
     String? todoText,
     bool? isDone,
-  })=>ToDo(id: id.toString(), todoText: todoText);
+  })=>ToDo(id: id!, todoText: todoText);
 }

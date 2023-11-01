@@ -1,37 +1,48 @@
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:todolist/model/todo.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class NotesDatabase{
+
   static final NotesDatabase instance=NotesDatabase._init();
 
   static Database? _database;
 
   NotesDatabase._init();
 
-  Future<Database?> get database async{
-    if(_database !=null) return _database;
-    _database =await _iniDB('note.db');
-    return _database;
+  Future<Database> get database async{
+    if(_database !=null) return _database!;
+    _database = await _initDB('note.db');
+    print('-----------------------init Db okay-----------------------------');
+    return _database!;
   }
 
-  Future<Database> _iniDB(String filePath) async {
+  Future<Database> _initDB(String filename) async {
+    Database db;
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
     final dbPath =await getDatabasesPath();
-    final path =join(dbPath,filePath);
-    return  await openDatabase(path,version: 1,onCreate: _createDB);
-
+    print(dbPath);
+    final path =join(dbPath,filename);
+    print(dbPath);
+    db=await openDatabase(path,version: 1,);
+    print('db is okay');
+    _createDB(db,1);
+    return  db;
   }
   Future _createDB(Database db,int version) async{
-    const  idType='Interger primary key autoincrement';
+    const  idType='Integer primary key autoincrement not null';
     const  todoTextType='text not null';
     const  isDoneType='Boolean not null';
+    print('ready to create table');
     await db.execute('''
-    CREATE TABLE $tableNotes(
+    CREATE TABLE IF NOT EXISTS $tableNotes(
     ${TodoFields.id} $idType,
     ${TodoFields.todoText} $todoTextType,
     ${TodoFields.isDone} $isDoneType
      )
     ''');
+    print('Table notes create succesfully');
   }
     Future<ToDo> create(ToDo note) async{
     final db =await instance.database;

@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:todolist/constants/colors.dart';
+import 'package:todolist/database/notes_database.dart';
 import 'package:todolist/widget/todo_item.dart';
 
 import '../model/todo.dart';
@@ -13,15 +14,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final todoList = ToDo.todoList();
+  //final todoList = ToDo.todoList();
   final addtaskcontroller = TextEditingController();
-  List<ToDo> _foundToDo = [];
-
+   List<ToDo> _foundToDo =[];
+  late  bool isLoading;
   @override
   void initState() {
-    _foundToDo = todoList;
+    refreshTodo();
+    /*if(_foundToDo.isEmpty)
+      {
+        print('Liste vide');
+        _foundToDo=todoList;
+      }*/
+
     super.initState();
-    //refreshTodo();
+
   }
 
   @override
@@ -91,7 +98,8 @@ class _HomePageState extends State<HomePage> {
                     margin: const EdgeInsets.only(bottom: 5, right: 20),
                     child: ElevatedButton(
                       onPressed: () {
-                        _addTodoItem(addtaskcontroller.text);
+                        if(addtaskcontroller.text.isNotEmpty)
+                            _addTodoItem(addtaskcontroller.text);
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: tdBlue,
@@ -136,9 +144,9 @@ class _HomePageState extends State<HomePage> {
   void _runfilter(String enteredKeyword) {
     List<ToDo>? result = [];
     if (enteredKeyword.isEmpty) {
-      result = todoList;
+      result = _foundToDo;
     } else {
-      result = todoList
+      result = _foundToDo
           .where((element) => element.todoText!
               .toLowerCase()
               .contains(enteredKeyword.toLowerCase()))
@@ -151,8 +159,11 @@ class _HomePageState extends State<HomePage> {
 
   void _addTodoItem(String task) {
     setState(() {
-      todoList.add(ToDo(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
+      _foundToDo.add(ToDo(
+          id: DateTime.now().millisecondsSinceEpoch,
+          todoText: task));
+      NotesDatabase.instance.create(ToDo(
+          id: DateTime.now().millisecondsSinceEpoch,
           todoText: task));
     });
     addtaskcontroller.clear();
@@ -161,12 +172,15 @@ class _HomePageState extends State<HomePage> {
   void _handleToDoChange(ToDo todo) {
     setState(() {
       todo.isDone = !todo.isDone;
+      NotesDatabase.instance.update(todo);
     });
   }
 
-  void _deleteToDoItem(String id) {
+  void _deleteToDoItem(int id) {
     setState(() {
-      todoList.removeWhere((item) => item.id == id);
+      _foundToDo.removeWhere((item) => item.id == id);
+      NotesDatabase.instance.delete(id);
+      refreshTodo();
     });
   }
 
@@ -195,9 +209,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
- /* Future refreshTodo() {
+  Future refreshTodo() async {
+    setState(() =>isLoading= true);
+    if((await NotesDatabase.instance.readAllNote())!.isNotEmpty)
+      _foundToDo=(await NotesDatabase.instance.readAllNote())!;
 
-  }*/
+  }
+
 }
 
 // ignore: must_be_immutable
@@ -256,6 +274,7 @@ class NavigationDrawerCustum extends StatelessWidget {
              fontSize: 15
          ),),
        onTap: () async{
+         NotesDatabase.instance.close();
          //todo It's for mobile app not for web
          /*if(Platform.isAndroid){
            print('Android');
