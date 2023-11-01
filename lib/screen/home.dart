@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
    List<ToDo> _foundToDo =[];
   late  bool isLoading;
   @override
-  void initState() {
+   initState()  {
     refreshTodo();
     /*if(_foundToDo.isEmpty)
       {
@@ -98,8 +98,11 @@ class _HomePageState extends State<HomePage> {
                     margin: const EdgeInsets.only(bottom: 5, right: 20),
                     child: ElevatedButton(
                       onPressed: () {
-                        if(addtaskcontroller.text.isNotEmpty)
-                            _addTodoItem(addtaskcontroller.text);
+                        if(addtaskcontroller.text.isNotEmpty){
+                          _addTodoItem(addtaskcontroller.text);
+                          print('Tache ajoutée avec sucess');
+                        }
+
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: tdBlue,
@@ -210,10 +213,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future refreshTodo() async {
-    setState(() =>isLoading= true);
-    if((await NotesDatabase.instance.readAllNote())!.isNotEmpty)
-      _foundToDo=(await NotesDatabase.instance.readAllNote())!;
-
+    if((await NotesDatabase.instance.readAllNote())!.isNotEmpty) {
+      _foundToDo = (await NotesDatabase.instance.readAllNote())!;
+      print('database actualization okay');
+      setState(()  {
+        isLoading = true;
+        _foundToDo;
+      });
+    }
   }
 
 }
