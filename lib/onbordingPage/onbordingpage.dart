@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:todolist/screen/login_screen.dart';
 
 import '../screen/home.dart';
 
@@ -37,22 +38,28 @@ class _OnbordingPageStateState extends State<OnbordingPageState> {
               child:  Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height/2,
-                      child: const Image(image: AssetImage('assets/images.jpeg'),
+                      child: const Image(image: AssetImage('assets/images.png'),
                         fit: BoxFit.contain,
                       ),
                     ),
                     const SizedBox(
                       height: 25,
                     ) ,
-                    const Text('Planify your time to have a better live ! ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20
-                    ),)
+                    const Padding(
+                      padding: EdgeInsets.only(left: 10,right: 10),
+                      child: Text('Planify your time to have a better live ! ',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,),
+                    )
                   ],
                 ),
               ),
@@ -73,11 +80,16 @@ class _OnbordingPageStateState extends State<OnbordingPageState> {
                     const SizedBox(
                       height: 25,
                     ) ,
-                    const Text('Do your best bro',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20
-                      ),)
+                   const Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Text('Do your best bro',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          color: Colors.white
+                        ),
+                      textAlign: TextAlign.center,),
+                    )
                   ],
                 ),
               ),
@@ -98,11 +110,16 @@ class _OnbordingPageStateState extends State<OnbordingPageState> {
                     const SizedBox(
                       height: 25,
                     ) ,
-                    const Text('Let Start Now! ',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20
-                      ),)
+                    const Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Text('Let Start Now! ',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          color: Colors.white
+                        ),
+                      textAlign: TextAlign.center,),
+                    )
                   ],
                 ),
               ),
@@ -111,22 +128,26 @@ class _OnbordingPageStateState extends State<OnbordingPageState> {
         ),
       ),
       bottomSheet: isLastPage?
-          TextButton(
-              style:TextButton.styleFrom(
-                foregroundColor: Colors.white, shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+          Padding(
+            padding: const EdgeInsets.only(left: 18,right: 18,bottom: 10),
+            child: TextButton(
+                style:TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  backgroundColor: Colors.teal,
+                  minimumSize: const Size.fromHeight(40),
                 ),
-                backgroundColor: Colors.teal,
-                minimumSize: const Size.fromHeight(80),
-              ),
-              onPressed: () async{
-                final pref = await SharedPreferences.getInstance();
-                pref.setBool('showHome', true);
-                // ignore: use_build_context_synchronously
-                Navigator.push(context, MaterialPageRoute(builder: (context){
-                  return const HomePage();
-                }));
-          }, child: const Text('Start'))
+                onPressed: () async{
+                  final pref = await SharedPreferences.getInstance();
+                  pref.setBool('showHome', true);
+                  // ignore: use_build_context_synchronously
+                  Navigator.push(context, MaterialPageRoute(builder: (context){
+                    return const LoginScreen();
+                  }));
+            }, child: const Text('Start')),
+          )
           : Container(
             padding: const EdgeInsets.symmetric(horizontal: 1),
              height: 80,

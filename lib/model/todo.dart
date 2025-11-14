@@ -1,25 +1,23 @@
-const  String tableNotes= 'notes';
+const String tableNotes = 'notes';
 
-class TodoFields{
-  static final List<String> values=[
-    id,todoText,isDone
-  ];
-  static const String id='_id';
-  static const String todoText='_todoText';
-  static const String isDone='isDone';
+class TodoFields {
+  static final List<String> values = [id, todoText, isDone];
+  static const String id = '_id';
+  static const String todoText = '_todoText';
+  static const String isDone = 'isDone';
 }
 
-class ToDo{
+class ToDo {
   int id;
   String? todoText;
   bool isDone;
-  
+
   ToDo({
     required this.id,
     required this.todoText,
-    this.isDone= false,
-});
-  
+    this.isDone = false,
+  });
+
   /*static List<ToDo> todoList()
   {
     return[
@@ -33,18 +31,18 @@ class ToDo{
     ];
   }*/
   Map<String, Object?> toJson() => {
-    TodoFields.id:id,
-    TodoFields.todoText:todoText,
-    TodoFields.isDone:isDone? 1:0
-};
-  static ToDo fromJson(Map<String,Object?> json)=>ToDo(
-    id: json[TodoFields.id]as int,
-    todoText: json[TodoFields.todoText] as String,
-    isDone: json[TodoFields.isDone]==1
-  );
+        TodoFields.id: id,
+        TodoFields.todoText: todoText,
+        TodoFields.isDone: isDone ? 1 : 0
+      };
+  static ToDo fromJson(Map<String, Object?> json) => ToDo(
+      id: json[TodoFields.id] as int,
+      todoText: json[TodoFields.todoText] as String,
+      isDone: json[TodoFields.isDone] == 1);
   ToDo copy({
     int? id,
     String? todoText,
     bool? isDone,
-  })=>ToDo(id: id!, todoText: todoText);
+  }) =>
+      ToDo(id: id ?? this.id, todoText: todoText ?? this.todoText);
 }

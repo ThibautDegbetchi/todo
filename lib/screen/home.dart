@@ -1,7 +1,9 @@
-
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todolist/constants/colors.dart';
 import 'package:todolist/database/notes_database.dart';
+import 'package:todolist/screen/login_screen.dart';
+import 'package:todolist/screen/todo_detail_screen.dart';
 import 'package:todolist/widget/todo_item.dart';
 
 import '../model/todo.dart';
@@ -20,17 +22,27 @@ class _HomePageState extends State<HomePage> {
   late  bool isLoading;
   @override
    initState()  {
-    refreshTodo();
-    /*if(_foundToDo.isEmpty)
-      {
-        print('Liste vide');
-        _foundToDo=todoList;
-      }*/
-
     super.initState();
+    isLoading = true;
+    refreshTodo();
 
   }
 
+  Future<void> _navigateToDetail({ToDo? todo}) async {
+    // On attend le résultat de l'écran de détail
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ToDoDetailScreen(todo: todo),
+      ),
+    );
+
+    // Si l'écran de détail a renvoyé 'actu', on rafraîchit
+    if (result == 'actu') {
+      print("Message reçu de l'écran de détail : il faut actualiser !");
+      refreshTodo(); // C'est ici que le rafraîchissement a lieu !
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,6 +74,9 @@ class _HomePageState extends State<HomePage> {
                           todo: todo,
                           onTodDoChanged: _handleToDoChange,
                           onDeletItem: _deleteToDoItem,
+                          onEditItem: (todoToEdit) {
+                            _navigateToDetail(todo: todoToEdit);
+                          },
                         ),
                     ],
                   ),
@@ -74,47 +89,50 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               children: [
                 Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.only(left: 10),
-                      margin: const EdgeInsets.only(bottom: 5, right: 20, left: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(0.0, 0.0),
-                              blurRadius: 10.0,
-                              spreadRadius: 0.0)
-                        ],
-                        borderRadius: BorderRadius.circular(10)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0,right: 2,bottom: 14),
                     child: TextField(
-                    controller: addtaskcontroller,
-                    decoration: const InputDecoration(
-                        hintText: 'Ajouter une nouvelle tache',
-                        border: InputBorder.none),
-                  ),
-                )),
-                Container(
-                    margin: const EdgeInsets.only(bottom: 5, right: 20),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if(addtaskcontroller.text.isNotEmpty){
-                          _addTodoItem(addtaskcontroller.text);
-                          print('Tache ajoutée avec sucess');
-                        }
-
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: tdBlue,
-                          minimumSize: const Size(60, 60),
-                          elevation: 10),
-                      child: const Text(
-                        '+',
-                        style: TextStyle(
-                          fontSize: 40,
+                      controller: addtaskcontroller,
+                      decoration: InputDecoration(
+                        hintText: 'Ajouter une nouvelle tâche',
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.white),
                         ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: tdBlue), // Met en évidence avec la couleur de l'app
+                        ),
+                        // Couleur de fond du champ
+                        fillColor: Colors.white,
+                        filled: true,
+                        // Padding interne géré par le TextField lui-même
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                       ),
-                    ))
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 5), // Espace entre le champ et le bouton
+                Padding(
+                  padding: const EdgeInsets.only(right: 14.0,bottom: 14),
+                  child: IconButton.filled(
+                    padding: const EdgeInsets.all(10),
+                    icon: const Icon(Icons.add),
+                    iconSize: 30,
+                    color: Colors.white,
+                    style: IconButton.styleFrom(
+                      backgroundColor: tdBlue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () {
+                      if (addtaskcontroller.text.isNotEmpty) {
+                        _addTodoItem(addtaskcontroller.text);
+                      }
+                    },
+                  ),
+                ),
               ],
             ),
           )
@@ -160,7 +178,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _addTodoItem(String task) {
+  Future<void> _addTodoItem(String task) async {
     setState(() {
       _foundToDo.add(ToDo(
           id: DateTime.now().millisecondsSinceEpoch,
@@ -170,21 +188,26 @@ class _HomePageState extends State<HomePage> {
           todoText: task));
     });
     addtaskcontroller.clear();
+    await refreshTodo();
+
   }
 
-  void _handleToDoChange(ToDo todo) {
+  Future<void> _handleToDoChange(ToDo todo) async {
     setState(() {
       todo.isDone = !todo.isDone;
       NotesDatabase.instance.update(todo);
     });
+    await refreshTodo();
   }
 
-  void _deleteToDoItem(int id) {
+  Future<void> _deleteToDoItem(int id) async {
     setState(() {
       _foundToDo.removeWhere((item) => item.id == id);
       NotesDatabase.instance.delete(id);
       refreshTodo();
     });
+    await refreshTodo();
+
   }
 
   Widget searchBox() {
@@ -212,15 +235,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future refreshTodo() async {
-    if((await NotesDatabase.instance.readAllNote())!.isNotEmpty) {
-      _foundToDo = (await NotesDatabase.instance.readAllNote())!;
-      print('database actualization okay');
-      setState(()  {
-        isLoading = true;
-        _foundToDo;
+  Future<void> refreshTodo() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    final allNotes = await NotesDatabase.instance.readAllNote();
+    if (mounted) {
+      setState(() {
+        _foundToDo = allNotes;
+        isLoading = false;
       });
     }
+    print('Database actualization complete. Found ${_foundToDo.length} items.');
   }
 
 }
@@ -290,7 +317,11 @@ class NavigationDrawerCustum extends StatelessWidget {
          }else {
            print('none');
          }*/
-
+        final prefs = await SharedPreferences.getInstance();
+        prefs.clear();
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context)=>const LoginScreen()),
+        );
        },
      )
    ],
